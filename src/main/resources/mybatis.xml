@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+		<package name="com.hl.wms.domain" />
+		<package name="com.hl.wms.query" />
+	</typeAliases>
+
+	<!-- 以前 -->
+	<!-- 数据库的连接信息 -->
+	<!-- 映射文件的路径 -->
+
+	<!-- spring + mybatis 一下内容交给容器来管理 -->
+	<!-- 数据库的连接信息 -->
+	<!-- 映射文件的路径 -->
+
+
+	<plugins>
+
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<property name="helperDialect" value="mysql" />
+		</plugin>
+
+	</plugins>
+
+</configuration>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+         
+    <!-- 注册RequestMappingHandlerMapping RequestMappingHandlerAdapter .... -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+	
+	<!-- 扫描包 -->
+	<context:component-scan base-package="com.hl.wms"></context:component-scan>
+	
+	<mvc:resources location="/static/" mapping="/static/**"></mvc:resources>
+	
+	<!-- 视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"></property>  <!-- 前缀  ：代表哪个目录下 -->
+		<property name="suffix" value=".jsp"></property>  <!-- 后缀  ：代表视图是以什么后缀的 -->
+	</bean>
+	
+	<!-- 配置拦截器 -->
+	<mvc:interceptors>
+	    <mvc:interceptor>
+	       <mvc:mapping path="/**"/>
+	       <mvc:exclude-mapping path="/static/**"/>
+	       <bean class="com.hl.wms.interceptor.LoginInterceptor"></bean>
+	    </mvc:interceptor>
+	</mvc:interceptors>
+	
+</beans>

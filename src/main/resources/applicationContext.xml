@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+         
+        <!-- 配置扫描 -->
+        <context:component-scan base-package="com.hl.wms"></context:component-scan>
+        
+         <!-- 配置dataSource-->
+         <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+             <!-- 基本信息:url\driver\userName\password -->
+             <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+             <property name="url" value="jdbc:mysql://localhost:3306/wms"></property>
+             <property name="username" value="root"></property>
+             <property name="password" value="root"></property>
+             <!-- 扩展信息:初始数量、最大容量、... -->
+         </bean>
+         
+        <!-- spring AOP事物管理 -->
+        <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+             <property name="dataSource" ref="dataSource"></property>
+        </bean>
+        
+        <!-- 事物aop -->
+        <tx:advice id="txAdvice" transaction-manager="txManager">
+           <tx:attributes>
+              <tx:method name="get*" read-only="true"/>
+              <tx:method name="query*" read-only="true"/>
+              <tx:method name="find*" read-only="true"/>
+              <tx:method name="*"/>
+           </tx:attributes>
+        </tx:advice>
+        
+        <aop:config>
+            <aop:pointcut expression="execution(* com.hl.wms..*.*(..))" id="txPoint"/>
+            <aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+        </aop:config>
+         
+        <!-- mybatis -->
+              <!-- 主配置 -->
+              <!-- 映射文件 -->
+               
+        <!-- spring + mybatis 以下内容交给容器来管理 -->
+            <!-- 数据库的连接信息 -->
+            <!-- 映射文件的路径-->
+            
+        <!-- 整合步骤
+            1:导入整合桥梁
+            2:配置SqlSessionFactoryBean
+         -->
+        
+        <!-- 配置整合桥梁-->
+        <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+            <!-- 配置数据源 -->
+            <property name="dataSource" ref="dataSource"></property>
+            
+            <!-- 配置主配置文件 -->
+            <property name="configLocation" value="classpath:mybatis.xml"></property>
+            
+            <!-- 配置映射文件路径 -->
+            <property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+        </bean>
+         
+         <!-- 扫描包下的接口,spring会为每个接口生成代理对象  -->
+         <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+             <property name="basePackage" value="com.hl.wms.dao"></property>
+         </bean>
+</beans>
